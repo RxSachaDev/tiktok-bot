@@ -1,5 +1,4 @@
 import requests
-import json
 from models.astrology_day import AstrologyDay
 
 class AstrologyServices:
@@ -18,9 +17,8 @@ class AstrologyServices:
 
             for signe, message in data.items():
                 if signe.lower() != "date":
-                    signs.append(AstrologyDay(signe, message, ""))
+                    signs.append(AstrologyDay(signe.upper(), message, f"assets/signs/{signe}.png"))
 
-            print(signs)
             return signs
 
         except Exception as e:
