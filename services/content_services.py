@@ -1,4 +1,4 @@
-import cv2
+import cv2, os
 import numpy as np
 from PIL import ImageFont, ImageDraw, Image
 
@@ -80,7 +80,7 @@ class ContentService:
                 sign_img_height = 0
 
         total_height = (sign_img_height if self.sign_picture else 0) + spacing_above_main + total_text_height
-        start_y = (resolution[1] - total_height) // 2 - 100
+        start_y = (resolution[1] - total_height) // 2
 
         # Ajouter l’image de signature
         if self.sign_picture:
@@ -103,8 +103,14 @@ class ContentService:
         y_second_start = y_after_main + spacing_between_blocks
         draw_lines(lines_second, font_second, y_second_start, line_spacing_second)
 
-        # Affichage final
-        final_image = cv2.cvtColor(np.array(image_pil), cv2.COLOR_RGB2BGR)
-        cv2.imshow("Image avec texte", final_image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # Créer dossier si inexistant
+        output_dir = "results/astrology_day"
+        os.makedirs(output_dir, exist_ok=True)
+
+        # Nom de fichier propre à partir du titre
+        safe_title = "".join(c if c.isalnum() or c in "-_ " else "_" for c in self.title).strip().replace(" ", "_")
+        output_path = os.path.join(output_dir, f"{safe_title}.png")
+
+        # Sauvegarde
+        image_pil.save(output_path)
+        print(f"Image générée et enregistrée dans : {output_path}")
