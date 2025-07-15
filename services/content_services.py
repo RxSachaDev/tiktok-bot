@@ -3,12 +3,13 @@ import numpy as np
 from PIL import ImageFont, ImageDraw, Image
 
 class ContentService:
-    def __init__(self, title, description, background, main_content, second_content, sign_picture=None):
+    def __init__(self, title, description, background, main_content, second_content, file_name, sign_picture=None):
         self.title = title
         self.description = description
         self.background = background
         self.main_content = main_content
         self.second_content = second_content
+        self.file_name = file_name
         self.sign_picture = sign_picture
 
     def generate_content(self):
@@ -28,7 +29,14 @@ class ContentService:
 
         # Chargement de la police
         font_path = "assets/fonts/TikTokSans-Bold.ttf"
-        font_main = ImageFont.truetype(font_path, 40)
+
+        # TAILLES DES POLICES ADAPTÉES EN FONCTION DE LA SIGNATURE
+        if self.sign_picture:
+            font_main_size = 40
+        else:
+            font_main_size = 85  # Plus grand si pas de signature
+
+        font_main = ImageFont.truetype(font_path, font_main_size)
         font_second = ImageFont.truetype(font_path, 27)
 
         max_width = resolution[0] - 100  # marge de 50px
@@ -66,6 +74,7 @@ class ContentService:
         total_text_height = height_main + spacing_between_blocks + height_second
 
         sign_img_height = 0
+        sign_img_resized = None
         if self.sign_picture:
             try:
                 sign_img = Image.open(self.sign_picture).convert("RGBA")
@@ -79,14 +88,18 @@ class ContentService:
                 self.sign_picture = None
                 sign_img_height = 0
 
+        # Calcul total hauteur (si pas de signature, la police plus grande gère la place)
         total_height = (sign_img_height if self.sign_picture else 0) + spacing_above_main + total_text_height
         start_y = (resolution[1] - total_height) // 2
 
-        # Ajouter l’image de signature
-        if self.sign_picture:
+        # Ajouter l’image de signature si elle existe
+        if self.sign_picture and sign_img_resized:
             x_sign = (resolution[0] - sign_img_resized.width) // 2
             image_pil.paste(sign_img_resized, (x_sign, start_y), mask=sign_img_resized)
             start_y += sign_img_height + spacing_above_main
+        elif not self.sign_picture:
+            # si pas de signature, on peut ajuster start_y un peu pour mieux centrer le texte
+            start_y = (resolution[1] - total_text_height) // 2
 
         # Fonction pour dessiner les lignes
         def draw_lines(lines, font, y_start, spacing):
@@ -104,7 +117,7 @@ class ContentService:
         draw_lines(lines_second, font_second, y_second_start, line_spacing_second)
 
         # Créer dossier si inexistant
-        output_dir = "results/astrology_day"
+        output_dir = f"results/{self.file_name}"
         os.makedirs(output_dir, exist_ok=True)
 
         # Nom de fichier propre à partir du titre
