@@ -17,7 +17,7 @@ signs: list[AstrologyDay] = AstrologyServices().load_content_by_sign()
 
 for sign in signs:
 
-    content_service = ContentService(sign.sign, "description_test", "assets/backgrounds/astrology1.jpg", sign.sign, sign.content, "astrology_day", sign.picture)
+    content_service = ContentService(sign.sign, "description_test", "assets/backgrounds/astrology5.jpg", sign.sign, sign.content, "astrology_day", sign.picture)
     content_service.generate_content()
 
 email_sender = EmailSenderServices(
@@ -35,21 +35,21 @@ email_sender.send_folder_contents(
 
 # One letter one sentence
 
-letters: list[OneLetterOneSentence] = LetterServices().load_content_by_letter()
+# letters: list[OneLetterOneSentence] = LetterServices().load_content_by_letter()
 
-for letter in letters:
+# for letter in letters:
 
-    content_service = ContentService(letter.letter, "description_test", "assets/backgrounds/one_letter_one_sentence.jpg", letter.letter, letter.message, "one_letter_one_sentence")
-    content_service.generate_content()
+#     content_service = ContentService(letter.letter, "description_test", "assets/backgrounds/one_letter_one_sentence.jpg", letter.letter, letter.message, "one_letter_one_sentence")
+#     content_service.generate_content()
 
-email_sender = EmailSenderServices(
-    sender_email=config['EMAIL'],
-    sender_password=config["PASSWORD"]  # Utilise un mot de passe d’application si tu es sur Gmail
-)
+# email_sender = EmailSenderServices(
+#     sender_email=config['EMAIL'],
+#     sender_password=config["PASSWORD"]  # Utilise un mot de passe d’application si tu es sur Gmail
+# )
 
-email_sender.send_folder_contents(
-    folder_path="results/one_letter_one_sentence",
-    subject="Une lettre une phrase",
-    body="Voici les contenus par lettre du jour.",
-    recipient_emails=[config['EMAIL']]
-)
+# email_sender.send_folder_contents(
+#     folder_path="results/one_letter_one_sentence",
+#     subject="Une lettre une phrase",
+#     body="Voici les contenus par lettre du jour.",
+#     recipient_emails=[config['EMAIL']]
+# )
