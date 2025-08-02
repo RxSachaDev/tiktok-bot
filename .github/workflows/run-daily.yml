@@ -20,7 +20,7 @@ jobs:
     
       - name: Recreate config.json
         run: |
-          echo "${{ secrets.CONFIG_JSON }}" > config.json
+          echo '${{ secrets.CONFIG_JSON }}' > config.json
 
       - name: Install dependencies
         run: |

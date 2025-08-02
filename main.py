@@ -21,7 +21,7 @@ for sign in signs:
     content_service.generate_content()
 
 email_sender = EmailSenderServices(
-    sender_email=config['EMAIL'],
+    sender_email=config["EMAIL"],
     sender_password=config["PASSWORD"]  # Utilise un mot de passe d’application si tu es sur Gmail
 )
 
@@ -29,7 +29,7 @@ email_sender.send_folder_contents(
     folder_path="results/astrology_day",
     subject="Astrology du jour",
     body="Voici les contenus astrologiques du jour.",
-    recipient_emails=[config['EMAIL']]
+    recipient_emails=[config["EMAIL"]]
 )
 
 
