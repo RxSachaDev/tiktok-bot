@@ -5,6 +5,9 @@ on:
     - cron: '0 0 * * *'  # Tous les jours à minuit UTC (donc 2h du matin en France l'été)
   workflow_dispatch:     # Permet aussi de le lancer manuellement
 
+permissions:
+  contents: write
+
 jobs:
   run-script:
     runs-on: ubuntu-latest
@@ -12,6 +15,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          persist-credentials: true  # permet de réutiliser GITHUB_TOKEN pour git push
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -30,3 +35,11 @@ jobs:
       - name: Run main.py
         run: |
           python main.py
+      
+      - name: Commit updated counter
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add counter.txt
+          git commit -m "Incrément du compteur automatique"
+          git push

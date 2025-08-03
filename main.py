@@ -8,6 +8,9 @@ from models.one_letter_one_sentence import OneLetterOneSentence
 
 import json
 
+with open("counter.txt", "r") as f:
+    count = int(f.read())
+
 
 # Astrology day
 with open('config.json', 'r') as f:
@@ -17,7 +20,7 @@ signs: list[AstrologyDay] = AstrologyServices().load_content_by_sign()
 
 for sign in signs:
 
-    content_service = ContentService(sign.sign, "description_test", "assets/backgrounds/astrology5.jpg", sign.sign, sign.content, "astrology_day", sign.picture)
+    content_service = ContentService(sign.sign, "description_test", f"assets/backgrounds/astrology{count}.jpg", sign.sign, sign.content, "astrology_day", sign.picture)
     content_service.generate_content()
 
 email_sender = EmailSenderServices(
@@ -31,6 +34,14 @@ email_sender.send_folder_contents(
     body="Voici les contenus astrologiques du jour.",
     recipient_emails=[config["EMAIL"]]
 )
+
+if count == 5:
+    count = 1
+else:
+    count += 1
+
+with open("counter.txt", "w") as f:
+    f.write(str(count))
 
 
 # One letter one sentence
