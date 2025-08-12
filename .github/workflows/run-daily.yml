@@ -2,7 +2,7 @@ name: Run main.py every day at midnight
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Tous les jours à minuit UTC (donc 2h du matin en France l'été)
+    - cron: '0 21 * * *'  # Tous les jours à minuit UTC (donc 2h du matin en France l'été)
   workflow_dispatch:     # Permet aussi de le lancer manuellement
 
 permissions:
