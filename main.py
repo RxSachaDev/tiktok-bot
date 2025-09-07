@@ -20,20 +20,19 @@ with open('config.json', 'r') as f:
     config = json.load(f)
 
 signs: list[AstrologyDay] = AstrologyServices().load_content_by_sign()
-
-# for sign in signs:
-#     content_service = ContentService(sign.sign, "description_test", f"assets/backgrounds/astrology{count}.jpg", sign.sign, sign.content, "astrology_day", sign.picture)
-#     content_service.generate_content()
-# email_sender = EmailSenderServices(
-#     sender_email=config["EMAIL"],
-#     sender_password=config["PASSWORD"]  # Utilise un mot de passe d’application si tu es sur Gmail
-# )
-# email_sender.send_folder_contents(
-#     folder_path="results/astrology_day",
-#     subject="Astrology du jour",
-#     body="Voici les contenus astrologiques du jour.",
-#     recipient_emails=[config["EMAIL"]]
-# )
+for sign in signs:
+    content_service = ContentService(sign.sign, "description_test", f"assets/backgrounds/astrology{count}.jpg", sign.sign, sign.content, "astrology_day", sign.picture)
+    content_service.generate_content()
+email_sender = EmailSenderServices(
+    sender_email=config["EMAIL"],
+    sender_password=config["PASSWORD"]  # Utilise un mot de passe d’application si tu es sur Gmail
+)
+email_sender.send_folder_contents(
+    folder_path="results/astrology_day",
+    subject="Astrology du jour",
+    body="Voici les contenus astrologiques du jour.",
+    recipient_emails=[config["EMAIL"]]
+)
 
 # Astrology day with voice
 
@@ -55,13 +54,14 @@ email_sender.send_folder_contents(
 
 # Astrology compatibility
 
-folder = "./results/compatibility_result"
-for filename in os.listdir(folder):
-    file_path = os.path.join(folder, filename)
-    if os.path.isfile(file_path) or os.path.islink(file_path):
-        os.unlink(file_path)
-    elif os.path.isdir(file_path):
-        shutil.rmtree(file_path)
+# folder = "./results/compatibility_result"
+# for filename in os.listdir(folder):
+#     file_path = os.path.join(folder, filename)
+#     if os.path.isfile(file_path) or os.path.islink(file_path):
+#         os.unlink(file_path)
+#     elif os.path.isdir(file_path):
+#         shutil.rmtree(file_path)
+
 compatibility_service = CompatibilityService().generate_content()
 for compatibility in compatibility_service:
     content_service = CompatibilityContentServices(
