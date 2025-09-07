@@ -47,7 +47,7 @@ email_sender = EmailSenderServices(
     sender_password=config["PASSWORD"]  # Utilise un mot de passe d’application si tu es sur Gmail
 )
 email_sender.send_folder_contents(
-    folder_path="results/astroloy_video_result",
+    folder_path="results/astrology_video_result",
     subject="Astrology du jour",
     body="Voici les contenus astrologiques du jour.",
     recipient_emails=[config["EMAIL"]]
