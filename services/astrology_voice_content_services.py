@@ -129,10 +129,12 @@ class AstrologyVoiceContentServices:
             except:
                 pass
 
-    def merge_videos(self,input_dir="results/astrology_video", output_prefix="results/astrology_video_result/final_astrology"):
+    def merge_videos(self, input_dir="results/astrology_video", output_dir="results/astrology_video_result"):
         """Concatène les fichiers MP4 en deux vidéos : 6 premiers signes et 6 derniers"""
         try:
-            os.makedirs(os.path.dirname(output_prefix), exist_ok=True)
+            # Créer les dossiers s'ils n'existent pas
+            os.makedirs(input_dir, exist_ok=True)
+            os.makedirs(output_dir, exist_ok=True)
 
             # Récupérer tous les fichiers MP4
             video_files = [f for f in os.listdir(input_dir) if f.endswith('.mp4')]
@@ -148,8 +150,10 @@ class AstrologyVoiceContentServices:
             second_half = video_files[6:]
 
             # Fonction helper pour créer une vidéo à partir d'une liste de fichiers
-            def create_merged_video(files, output_file):
+            def create_merged_video(files, output_name):
                 clips = []
+                output_file = os.path.join(output_dir, output_name)
+                
                 for file in files:
                     file_path = os.path.join(input_dir, file)
                     try:
@@ -175,12 +179,12 @@ class AstrologyVoiceContentServices:
             # Créer la première vidéo (6 premiers signes)
             if first_half:
                 print("\nCréation de la première vidéo (6 premiers signes)...")
-                create_merged_video(first_half, f"{output_prefix}_part1.mp4")
+                create_merged_video(first_half, "final_astrology_part1.mp4")
 
             # Créer la deuxième vidéo (6 derniers signes)
             if second_half:
                 print("\nCréation de la deuxième vidéo (6 derniers signes)...")
-                create_merged_video(second_half, f"{output_prefix}_part2.mp4")
+                create_merged_video(second_half, "final_astrology_part2.mp4")
 
             print("Fusion des vidéos terminée")
             
