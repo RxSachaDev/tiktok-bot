@@ -1,4 +1,4 @@
-import cv2
+import cv2 
 import numpy as np
 import json
 import os
@@ -130,63 +130,42 @@ class AstrologyVoiceContentServices:
                 pass
 
     def merge_videos(self, input_dir="results/astrology_video", output_dir="results/astrology_video_result"):
-        """Concatène les fichiers MP4 en deux vidéos : 6 premiers signes et 6 derniers"""
+        """Concatène tous les fichiers MP4 en une seule vidéo finale"""
         try:
-            # Créer les dossiers s'ils n'existent pas
             os.makedirs(input_dir, exist_ok=True)
             os.makedirs(output_dir, exist_ok=True)
 
-            # Récupérer tous les fichiers MP4
-            video_files = [f for f in os.listdir(input_dir) if f.endswith('.mp4')]
+            # Récupérer et trier tous les fichiers MP4
+            video_files = sorted([f for f in os.listdir(input_dir) if f.endswith('.mp4')])
             if not video_files:
                 print("Aucun fichier MP4 trouvé dans le dossier.")
                 return
 
-            # Trier les fichiers
-            video_files.sort()
-            
-            # Séparer en deux groupes
-            first_half = video_files[:6]
-            second_half = video_files[6:]
+            clips = []
+            for file in video_files:
+                file_path = os.path.join(input_dir, file)
+                try:
+                    clip = VideoFileClip(file_path)
+                    clips.append(clip)
+                    print(f"Ajout de {file}")
+                except Exception as e:
+                    print(f"Erreur lors du chargement de {file}: {e}")
 
-            # Fonction helper pour créer une vidéo à partir d'une liste de fichiers
-            def create_merged_video(files, output_name):
-                clips = []
-                output_file = os.path.join(output_dir, output_name)
-                
-                for file in files:
-                    file_path = os.path.join(input_dir, file)
-                    try:
-                        clip = VideoFileClip(file_path)
-                        clips.append(clip)
-                        print(f"Ajout de {file}")
-                    except Exception as e:
-                        print(f"Erreur lors du chargement de {file}: {e}")
+            if clips:
+                final_clip = concatenate_videoclips(clips, method="chain")
+                output_file = os.path.join(output_dir, "final_astrology.mp4")
+                final_clip.write_videofile(
+                    output_file,
+                    fps=25,
+                    codec='libx264',
+                    audio_codec='aac'
+                )
+                print(f"Vidéo finale générée : {output_file}")
 
-                if clips:
-                    final_clip = concatenate_videoclips(clips, method="chain")
-                    final_clip.write_videofile(
-                        output_file,
-                        fps=25,
-                        codec='libx264',
-                        audio_codec='aac'
-                    )
-                    # Nettoyer
-                    for clip in clips:
-                        clip.close()
-                    final_clip.close()
+                # Nettoyer
+                for clip in clips:
+                    clip.close()
+                final_clip.close()
 
-            # Créer la première vidéo (6 premiers signes)
-            if first_half:
-                print("\nCréation de la première vidéo (6 premiers signes)...")
-                create_merged_video(first_half, "final_astrology_part1.mp4")
-
-            # Créer la deuxième vidéo (6 derniers signes)
-            if second_half:
-                print("\nCréation de la deuxième vidéo (6 derniers signes)...")
-                create_merged_video(second_half, "final_astrology_part2.mp4")
-
-            print("Fusion des vidéos terminée")
-            
         except Exception as e:
             print(f"Erreur lors de la fusion des vidéos : {e}")
