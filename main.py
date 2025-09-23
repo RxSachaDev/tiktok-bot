@@ -77,7 +77,7 @@ email_sender.send_folder_contents(
     body="Voici les contenus de compatibilité astrologique.",
     recipient_emails=[config["EMAIL"]]
 )
-if count == 5:
+if count == 7:
     count = 1
 else:
     count += 1
